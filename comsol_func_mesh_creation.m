@@ -1,0 +1,10 @@
+model.component('comp1').mesh('mesh1').create('edg3', 'Edge');
+model.component('comp1').mesh('mesh1').feature('edg3').create('dis1', 'Distribution');model.component('comp1').mesh('mesh1').feature('size').set('hauto', 1);
+model.component('comp1').mesh('mesh1').feature('size').set('custom', 'on');
+model.component('comp1').mesh('mesh1').feature('size').set('table', 'semi');
+model.component('comp1').mesh('mesh1').feature('size').set('hmin', 0.008);
+model.component('comp1').mesh('mesh1').feature('size').set('hgrad', 1);
+model.component('comp1').mesh('mesh1').feature('size').set('hmax', 1);
+model.component('comp1').mesh('mesh1').feature('edg3').label('Edge 1');
+model.component('comp1').mesh('mesh1').feature('edg3').feature('dis1').set('numelem', 'number_of_intervals_in_mesh');
+model.component('comp1').mesh('mesh1').run;

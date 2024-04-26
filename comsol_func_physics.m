@@ -1,0 +1,33 @@
+model.component('comp1').physics('semi').create('adm1', 'AnalyticDopingModel', 1);
+model.component('comp1').physics('semi').feature('adm1').selection.all;
+model.component('comp1').physics('semi').create('gdm1', 'GeometricDopingModel', 1);
+model.component('comp1').physics('semi').feature('gdm1').selection.set([1]);
+model.component('comp1').physics('semi').feature('gdm1').feature('gdmbs1').selection.set([1]);
+model.component('comp1').physics('semi').create('gdm2', 'GeometricDopingModel', 1);
+model.component('comp1').physics('semi').feature('gdm2').selection.all;
+model.component('comp1').physics('semi').feature('gdm2').feature('gdmbs1').selection.set([2]);
+model.component('comp1').physics('semi').create('tar1', 'TrapAssistedRecombination', 1);
+model.component('comp1').physics('semi').feature('tar1').selection.all;
+model.component('comp1').physics('semi').create('udg1', 'UDGeneration', 1);
+model.component('comp1').physics('semi').feature('udg1').selection.all;
+model.component('comp1').physics('semi').create('mc1', 'MetalContact', 0);
+model.component('comp1').physics('semi').feature('mc1').selection.set([1]);
+model.component('comp1').physics('semi').create('mc2', 'MetalContact', 0);
+model.component('comp1').physics('semi').feature('mc2').selection.set([2]);
+model.component('comp1').physics('semi').prop('d').set('A', 'A');
+model.component('comp1').physics('semi').feature('smm1').set('minput_temperature', 'T');
+model.component('comp1').physics('semi').feature('adm1').set('impurityType', 'donor');
+model.component('comp1').physics('semi').feature('adm1').set('NDc', 'bulk_doping');
+model.component('comp1').physics('semi').feature('gdm1').set('jd_gen', 'pn_junction_depth');
+model.component('comp1').physics('semi').feature('gdm1').set('NAgen', 'p0');
+model.component('comp1').physics('semi').feature('gdm1').set('Nb_gen', 'bulk_doping/10');
+model.component('comp1').physics('semi').feature('gdm2').set('impurityType', 'donor');
+model.component('comp1').physics('semi').feature('gdm2').set('jd_gen', 'nn_junction_depth');
+model.component('comp1').physics('semi').feature('gdm2').set('NAgen', 'n0');
+model.component('comp1').physics('semi').feature('gdm2').set('NDgen', 'n0');
+model.component('comp1').physics('semi').feature('gdm2').set('Nb_gen', 'bulk_doping/10');
+model.component('comp1').physics('semi').feature('udg1').set('Gn', 'G_tot + delta_G');
+model.component('comp1').physics('semi').feature('udg1').set('Gp', 'G_tot + delta_G');
+model.component('comp1').physics('semi').feature('mc1').set('V0', 'V0');
+
+
