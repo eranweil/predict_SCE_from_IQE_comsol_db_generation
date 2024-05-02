@@ -86,6 +86,47 @@ model.sol('sol1').feature('s1').feature('d1').set('ooc', false);
 model.sol('sol1').feature('s1').feature('d1').set('errorchk', false);
 model.sol('sol1').runAll;
 
+% Study 2: No generation for Green model dark carrier concentration
+if run_study_2
+    model.study.create('std4');
+    model.study('std4').create('stat', 'Stationary');
+    model.study('std4').feature('stat').set('useadvanceddisable', true);
+    model.study('std4').feature('stat').set('disabledvariables', {'var2' 'var3'});
+
+    model.sol.create('sol4');
+    model.sol('sol4').study('std4');
+    model.sol('sol4').attach('std4');
+    model.sol('sol4').create('st1', 'StudyStep');
+    model.sol('sol4').create('v1', 'Variables');
+    model.sol('sol4').create('s1', 'Stationary');
+    model.sol('sol4').feature('s1').create('fc1', 'FullyCoupled');
+    model.sol('sol4').feature('s1').create('d1', 'Direct');
+    model.sol('sol4').feature('s1').feature.remove('fcDef');
+
+    model.result.dataset.create('dset4', 'Solution');
+    model.result.dataset('dset4').set('solution', 'sol4');
+
+    model.study('std4').label('Study 2 no bg lighting');
+
+    model.sol('sol4').attach('std4');
+    model.sol('sol4').feature('st1').label('Compile Equations: Stationary');
+    model.sol('sol4').feature('v1').label('Dependent Variables 1.1');
+    model.sol('sol4').feature('s1').label('Stationary Solver 1.1');
+    model.sol('sol4').feature('s1').set('stol', 1.0E-6);
+    model.sol('sol4').feature('s1').feature('dDef').label('Direct 2');
+    model.sol('sol4').feature('s1').feature('aDef').label('Advanced 1');
+    model.sol('sol4').feature('s1').feature('aDef').set('cachepattern', true);
+    model.sol('sol4').feature('s1').feature('aDef').set('assemtol', 0);
+    model.sol('sol4').feature('s1').feature('fc1').label('Fully Coupled 1.1');
+    model.sol('sol4').feature('s1').feature('fc1').set('initstep', 0.1);
+    model.sol('sol4').feature('s1').feature('fc1').set('minsteprecovery', 0.001);
+    model.sol('sol4').feature('s1').feature('fc1').set('maxiter', 50);
+    model.sol('sol4').feature('s1').feature('d1').label('Direct 1.1');
+    model.sol('sol4').feature('s1').feature('d1').set('ooc', false);
+    model.sol('sol4').feature('s1').feature('d1').set('errorchk', false);
+    model.sol('sol4').runAll;
+end
+
 % Study 3: Delta G sweep over locations loc0 in the device
 model.study.create('std3');
 model.study('std3').create('stat', 'Stationary');
@@ -105,7 +146,6 @@ model.sol('sol3').feature('s1').feature.remove('fcDef');
 
 model.result.dataset.create('dset3', 'Solution');
 model.result.dataset('dset3').set('solution', 'sol3');
-model.result.dataset.remove('dset2');
 
 model.study('std3').label('Study 3 full sweep');
 model.study('std3').feature('stat').set('useparam', true);

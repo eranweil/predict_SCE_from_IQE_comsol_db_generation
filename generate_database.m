@@ -30,11 +30,21 @@ mun_first = 145;                      mun_last = 14500;
 mup_first = 50;                       mup_last = 5000;
 
 % Number of iterations for each parameter sweep
-bulk_doping_num_iter = 10;
-junction_doping_num_iter = 10;
-lifetime_num_iter = 10;
-mobility_num_iter = 10;
-device_length_num_iter = 8;
+bulk_doping_num_iter = 1;
+junction_doping_num_iter = 1;
+lifetime_num_iter = 1;
+mobility_num_iter = 1;
+device_length_num_iter = 1;
+
+% %%%Classic device - uncomment for green comparison
+% L_first = 140;
+% bulk_doping_first = 1E16;
+% p0_first = bulk_doping_first * 100;
+% n0_first = bulk_doping_first * 100;
+% taup_first = 10;
+% taun_first = 10;
+% mun_first = 1450;
+% mup_first = 500;
 
 % Calculation of jump factors for logarithmic sweeps
 if bulk_doping_num_iter > 1
@@ -88,6 +98,13 @@ for bulk_doping_loop_index = 1:bulk_doping_num_iter
         for lifetime_loop_index = 1:lifetime_num_iter
             for mobility_loop_index = 1:mobility_num_iter
                 for device_length_loop_index = 1:device_length_num_iter
+
+                    % Run dark carrier simulation for green comparison
+                    if (L == 100) && (bulk_doping == 1E16) && (p0 == bulk_doping * 100) && (n0 == bulk_doping * 100) && (taup == 10) && (taun == 10) && (mun == 1450) && (mup == 500)
+                        run_study_2 = 1;
+                    else
+                        run_study_2 = 0;
+                    end
 
                     % Prepare simulation parameters
                     n_junction_loc = L - junction_loc_n;
