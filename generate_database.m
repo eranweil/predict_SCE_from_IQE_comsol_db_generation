@@ -26,25 +26,46 @@ p0_first = bulk_doping_first * 10;    p0_last = 1E19;
 n0_first = bulk_doping_first * 10;    n0_last = 1E19;
 taup_first = 1;                       taup_last = 100;
 taun_first = 1;                       taun_last = 100;
-mun_first = 145;                      mun_last = 14500;
 mup_first = 50;                       mup_last = 5000;
+mun_first = 145;                      mun_last = 14500;
 
 % Number of iterations for each parameter sweep
-bulk_doping_num_iter = 1;
-junction_doping_num_iter = 1;
-lifetime_num_iter = 1;
-mobility_num_iter = 1;
-device_length_num_iter = 1;
+% For Green comparison make all num_iter 1
+bulk_doping_num_iter = 10;
+junction_doping_num_iter = 10;
+lifetime_num_iter = 10;
+mobility_num_iter = 10;
+device_length_num_iter = 8;
 
-% %%%Classic device - uncomment for green comparison
-% L_first = 140;
-% bulk_doping_first = 1E16;
-% p0_first = bulk_doping_first * 100;
-% n0_first = bulk_doping_first * 100;
+% %%%Green device - uncomment for green comparison
+% L_first = 100;
+% bulk_doping_first = 1E14;
+% p0_first = bulk_doping_first * 10;
+% n0_first = bulk_doping_first * 10;
 % taup_first = 10;
 % taun_first = 10;
-% mun_first = 1450;
 % mup_first = 500;
+% mun_first = 1450;
+
+% %%%Green device - uncomment for green comparison
+% L_first = 140;
+% bulk_doping_first = 1E14;
+% p0_first = bulk_doping_first * 10000;
+% n0_first = bulk_doping_first * 10000;
+% taup_first = 100;
+% taun_first = 100;
+% mup_first = 1077;
+% mun_first = 3124;
+ 
+% %%%Green device - uncomment for green comparison
+% L_first = 220;
+% bulk_doping_first = 1E15;
+% p0_first = bulk_doping_first * 10;
+% n0_first = bulk_doping_first * 10;
+% taup_first = 1;
+% taun_first = 1;
+% mup_first = 387;
+% mun_first = 1123;
 
 % Calculation of jump factors for logarithmic sweeps
 if bulk_doping_num_iter > 1
@@ -100,7 +121,11 @@ for bulk_doping_loop_index = 1:bulk_doping_num_iter
                 for device_length_loop_index = 1:device_length_num_iter
 
                     % Run dark carrier simulation for green comparison
-                    if (L == 100) && (bulk_doping == 1E16) && (p0 == bulk_doping * 100) && (n0 == bulk_doping * 100) && (taup == 10) && (taun == 10) && (mun == 1450) && (mup == 500)
+                    if (L == 100) && (bulk_doping == 1E14) && (p0 == bulk_doping * 10) && (n0 == bulk_doping * 10) && (taup == 10) && (taun == 10) && (mup == 500) && (mun == 1450)
+                        run_study_2 = 1;
+                    elseif (L == 140) && (bulk_doping == 1E14) && (p0 == bulk_doping * 10000) && (n0 == bulk_doping * 10000) && (taup == 100) && (taun == 100) && (mup == 1077) && (mun == 3124)
+                        run_study_2 = 1;
+                    elseif (L == 220) && (bulk_doping == 1E15) && (p0 == bulk_doping * 10) && (n0 == bulk_doping * 10) && (taup == 1) && (taun == 1) && (mup == 387) && (mun == 1123)
                         run_study_2 = 1;
                     else
                         run_study_2 = 0;
@@ -121,10 +146,28 @@ for bulk_doping_loop_index = 1:bulk_doping_num_iter
                                 bulk_doping, p0, n0, taup, taun, mup, mun, L);
                     disp(X) 
 
-                    % Replace with your COMSOL functions
+                    % Comsol model calculation
                     comsol_create_model; 
+                    % Calculating resulting IQE and SCE from Comsol run
                     get_results_from_model;
+                    % For specific devices, compare to Green analytical
+                    % model
+                    if (L == 100) && (bulk_doping == 1E14) && (p0 == bulk_doping * 10) && (n0 == bulk_doping * 10) && (taup == 10) && (taun == 10) && (mup == 500) && (mun == 1450)
+                        Sp = 100;   % Surface recombination velocity (p-side)
+                        Sn = 1000;  % Surface recombination velocity (n-side)
+                        Green_comparison;
+                    elseif (L == 140) && (bulk_doping == 1E14) && (p0 == bulk_doping * 10000) && (n0 == bulk_doping * 10000) && (taup == 100) && (taun == 100) && (mup == 1077) && (mun == 3124)
+                        Sp = 7;     % Surface recombination velocity (p-side)
+                        Sn = 7;     % Surface recombination velocity (n-side)
+                        Green_comparison;
+                    elseif (L == 220) && (bulk_doping == 1E15) && (p0 == bulk_doping * 10) && (n0 == bulk_doping * 10) && (taup == 1) && (taun == 1) && (mup == 387) && (mun == 1123)
+                        Sp = 100;   % Surface recombination velocity (p-side)
+                        Sn = 1000;  % Surface recombination velocity (n-side)
+                        Green_comparison;
+                    end
+                    % Prepare data for ML consumption
                     create_labels_matrix;
+                    % Evaluate IQE based on analytical model
                     evaluate_database;
 
                     % Record end time and save results  
