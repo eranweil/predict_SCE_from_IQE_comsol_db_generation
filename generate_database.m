@@ -15,8 +15,6 @@ disp(t1);
 delta_amplitude_b = 1E20;
 sigma = 50E-9;
 q = 1.6E-19;
-p_junction_loc = 0.5;
-junction_loc_n = 0.5;
 number_of_intervals_in_mesh = 2400;
 
 % Initial and final values for device parameters
@@ -39,9 +37,9 @@ device_length_num_iter = 8;
 
 % %%%Green device - uncomment for green comparison
 % L_first = 100;
-% bulk_doping_first = 1E14;
-% p0_first = bulk_doping_first * 10;
-% n0_first = bulk_doping_first * 10;
+% bulk_doping_first = 1E16;
+% p0_first = bulk_doping_first * 100;
+% n0_first = bulk_doping_first * 100;
 % taup_first = 10;
 % taun_first = 10;
 % mup_first = 500;
@@ -121,7 +119,7 @@ for bulk_doping_loop_index = 1:bulk_doping_num_iter
                 for device_length_loop_index = 1:device_length_num_iter
 
                     % Run dark carrier simulation for green comparison
-                    if (L == 100) && (bulk_doping == 1E14) && (p0 == bulk_doping * 10) && (n0 == bulk_doping * 10) && (taup == 10) && (taun == 10) && (mup == 500) && (mun == 1450)
+                    if (L == 100) && (bulk_doping == 1E16) && (p0 == bulk_doping * 100) && (n0 == bulk_doping * 100) && (taup == 10) && (taun == 10) && (mup == 500) && (mun == 1450)
                         run_study_2 = 1;
                     elseif (L == 140) && (bulk_doping == 1E14) && (p0 == bulk_doping * 10000) && (n0 == bulk_doping * 10000) && (taup == 100) && (taun == 100) && (mup == 1077) && (mun == 3124)
                         run_study_2 = 1;
@@ -152,13 +150,13 @@ for bulk_doping_loop_index = 1:bulk_doping_num_iter
                     get_results_from_model;
                     % For specific devices, compare to Green analytical
                     % model
-                    if (L == 100) && (bulk_doping == 1E14) && (p0 == bulk_doping * 10) && (n0 == bulk_doping * 10) && (taup == 10) && (taun == 10) && (mup == 500) && (mun == 1450)
-                        Sp = 100;   % Surface recombination velocity (p-side)
-                        Sn = 1000;  % Surface recombination velocity (n-side)
+                    if (L == 100) && (bulk_doping == 1E16) && (p0 == bulk_doping * 100) && (n0 == bulk_doping * 100) && (taup == 10) && (taun == 10) && (mup == 500) && (mun == 1450)
+                        Sp = 50;    % Surface recombination velocity (p-side)
+                        Sn = 220;   % Surface recombination velocity (n-side)
                         Green_comparison;
                     elseif (L == 140) && (bulk_doping == 1E14) && (p0 == bulk_doping * 10000) && (n0 == bulk_doping * 10000) && (taup == 100) && (taun == 100) && (mup == 1077) && (mun == 3124)
-                        Sp = 7;     % Surface recombination velocity (p-side)
-                        Sn = 7;     % Surface recombination velocity (n-side)
+                        Sp = 1;     % Surface recombination velocity (p-side)
+                        Sn = 5;     % Surface recombination velocity (n-side)
                         Green_comparison;
                     elseif (L == 220) && (bulk_doping == 1E15) && (p0 == bulk_doping * 10) && (n0 == bulk_doping * 10) && (taup == 1) && (taun == 1) && (mup == 387) && (mun == 1123)
                         Sp = 100;   % Surface recombination velocity (p-side)
