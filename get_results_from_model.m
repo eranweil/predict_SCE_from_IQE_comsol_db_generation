@@ -8,6 +8,7 @@ clear Lambda0_struct;
 IQE_struct = mpheval(model, 'semi.I0_2/(q*PHY *A * (1-R))', 'unit', '1', 'dataset', 'dset1');
 IQE(:,1) = Lambda0_arr(:,1);  % Store Lambda0 values
 IQE(:,2) = IQE_struct.d1(:,1); % Store IQE values
+IQE(1,3) = L;
 clear IQE_struct;
 
 % Extract IQE value corresponding to Lambda0
