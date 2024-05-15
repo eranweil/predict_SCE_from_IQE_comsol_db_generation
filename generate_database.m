@@ -29,8 +29,8 @@ mun_first = 145;                      mun_last = 14500;
 
 % Number of iterations for each parameter sweep
 % For Green comparison make all num_iter 1
-bulk_doping_num_iter = 10;
-junction_doping_num_iter = 10;
+bulk_doping_num_iter = 5;
+junction_doping_num_iter = bulk_doping_num_iter + 1;
 lifetime_num_iter = 10;
 mobility_num_iter = 10;
 device_length_num_iter = 8;
@@ -72,8 +72,8 @@ else
    bulk_doping_jump = 1;
 end
 if junction_doping_num_iter > 1
-   p0_jump = 10^((log10(p0_last/p0_first))/(junction_doping_num_iter-1));
-   n0_jump = 10^((log10(n0_last/n0_first))/(junction_doping_num_iter-1));
+   p0_jump = 10;
+   n0_jump = 10;
 else
    p0_jump = 1;
    n0_jump = 1;
@@ -144,42 +144,55 @@ for bulk_doping_loop_index = 1:bulk_doping_num_iter
                                 bulk_doping, p0, n0, taup, taun, mup, mun, L);
                     disp(X) 
 
-                    % Comsol model calculation
-                    comsol_create_model; 
-                    % Calculating resulting IQE and SCE from Comsol run
-                    get_results_from_model;
-                    % For specific devices, compare to Green analytical
-                    % model
-                    if (L == 100) && (bulk_doping == 1E16) && (p0 == bulk_doping * 100) && (n0 == bulk_doping * 100) && (taup == 10) && (taun == 10) && (mup == 500) && (mun == 1450)
-                        Sp = 50;    % Surface recombination velocity (p-side)
-                        Sn = 220;   % Surface recombination velocity (n-side)
-                        Green_comparison;
-                    elseif (L == 140) && (bulk_doping == 1E14) && (p0 == bulk_doping * 10000) && (n0 == bulk_doping * 10000) && (taup == 100) && (taun == 100) && (mup == 1077) && (mun == 3124)
-                        Sp = 1;     % Surface recombination velocity (p-side)
-                        Sn = 5;     % Surface recombination velocity (n-side)
-                        Green_comparison;
-                    elseif (L == 220) && (bulk_doping == 1E15) && (p0 == bulk_doping * 10) && (n0 == bulk_doping * 10) && (taup == 1) && (taun == 1) && (mup == 387) && (mun == 1123)
-                        Sp = 100;   % Surface recombination velocity (p-side)
-                        Sn = 1000;  % Surface recombination velocity (n-side)
-                        Green_comparison;
+                    try
+                        % Comsol model calculation
+                        comsol_create_model; 
+                        % Calculating resulting IQE and SCE from Comsol run
+                        get_results_from_model;
+                        % For specific devices, compare to Green analytical
+                        % model
+                        if (L == 100) && (bulk_doping == 1E16) && (p0 == bulk_doping * 100) && (n0 == bulk_doping * 100) && (taup == 10) && (taun == 10) && (mup == 500) && (mun == 1450)
+                            Sp = 50;    % Surface recombination velocity (p-side)
+                            Sn = 220;   % Surface recombination velocity (n-side)
+                            Green_comparison;
+                        elseif (L == 140) && (bulk_doping == 1E14) && (p0 == bulk_doping * 10000) && (n0 == bulk_doping * 10000) && (taup == 100) && (taun == 100) && (mup == 1077) && (mun == 3124)
+                            Sp = 1;     % Surface recombination velocity (p-side)
+                            Sn = 5;     % Surface recombination velocity (n-side)
+                            Green_comparison;
+                        elseif (L == 220) && (bulk_doping == 1E15) && (p0 == bulk_doping * 10) && (n0 == bulk_doping * 10) && (taup == 1) && (taun == 1) && (mup == 387) && (mun == 1123)
+                            Sp = 100;   % Surface recombination velocity (p-side)
+                            Sn = 1000;  % Surface recombination velocity (n-side)
+                            Green_comparison;
+                        end
+                        % Prepare data for ML consumption
+                        create_labels_matrix;
+                        % Evaluate IQE based on analytical model
+                        % evaluate_database;
+
+                        % Record end time and save results  
+                        t2 = datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z');
+                        disp(t2); 
+
+                        filename = strcat(base_directory,'results_SCE\',sprintf('SCE_bulk_doping_%0.e_p0_%0.e_n0_%0.e_taup_%d_taun_%d_mup_%d_mun_%d_L_%d.csv',bulk_doping,p0,n0,taup,taun,mup,mun,L));
+                        writematrix(SCE_comsol,filename);
+
+                        filename = strcat(base_directory,'results_IQE\',sprintf('IQE_bulk_doping_%0.e_p0_%0.e_n0_%0.e_taup_%d_taun_%d_mup_%d_mun_%d_L_%d.csv',bulk_doping,p0,n0,taup,taun,mup,mun,L));
+                        writematrix(IQE,filename)
+
+                        filename = strcat(base_directory,'results_LAB\',sprintf('LAB_bulk_doping_%0.e_p0_%0.e_n0_%0.e_taup_%d_taun_%d_mup_%d_mun_%d_L_%d.csv',bulk_doping,p0,n0,taup,taun,mup,mun,L));
+                        writematrix(label_mat,filename)
+
+                    catch ME
+                        warning('Error running comsol_create_model for parameters: %s\n Error message: %s', X, ME.message);
+                        
+                        % Log the failure with more details
+                        fileID = fopen('comsol_failures.log', 'a');  % Append mode
+                        fprintf(fileID, 'Failure at: %s with parameters: %s\nError message: %s\n', datetime('now'), X, ME.message);
+                        fclose(fileID);
+                        
+                        % Continue to the next iteration
+                        continue; 
                     end
-                    % Prepare data for ML consumption
-                    create_labels_matrix;
-                    % Evaluate IQE based on analytical model
-                    evaluate_database;
-
-                    % Record end time and save results  
-                    t2 = datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z');
-                    disp(t2); 
-
-                    filename = strcat(base_directory,'results_SCE\',sprintf('SCE_bulk_doping_%0.e_p0_%0.e_n0_%0.e_taup_%d_taun_%d_mup_%d_mun_%d_L_%d.csv',bulk_doping,p0,n0,taup,taun,mup,mun,L));
-                    writematrix(SCE_comsol,filename);
-
-                    filename = strcat(base_directory,'results_IQE\',sprintf('IQE_bulk_doping_%0.e_p0_%0.e_n0_%0.e_taup_%d_taun_%d_mup_%d_mun_%d_L_%d.csv',bulk_doping,p0,n0,taup,taun,mup,mun,L));
-                    writematrix(IQE,filename)
-
-                    filename = strcat(base_directory,'results_LAB\',sprintf('LAB_bulk_doping_%0.e_p0_%0.e_n0_%0.e_taup_%d_taun_%d_mup_%d_mun_%d_L_%d.csv',bulk_doping,p0,n0,taup,taun,mup,mun,L));
-                    writematrix(label_mat,filename)
 
                     % Update parameters for the next iteration 
                     %calculate device length         
@@ -197,8 +210,8 @@ for bulk_doping_loop_index = 1:bulk_doping_num_iter
             mun = mun_first;
         end
         %calculate junction concentration
-        p0 = p0 * p0_jump;
-        n0 = n0 * p0_jump;
+        p0 = p0 * 10;
+        n0 = n0 * 10;
         taup = taup_first;
         taun = taun_first;
     end
@@ -206,6 +219,5 @@ for bulk_doping_loop_index = 1:bulk_doping_num_iter
     bulk_doping = bulk_doping * bulk_doping_jump;
     p0_first = bulk_doping * 10;
     n0_first = bulk_doping * 10;
-    p0_jump = 10^((log10(p0_last/p0_first))/(junction_doping_num_iter-1));
-    n0_jump = 10^((log10(n0_last/n0_first))/(junction_doping_num_iter-1));
+    junction_doping_num_iter = junction_doping_num_iter - 1;
 end

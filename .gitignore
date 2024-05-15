@@ -1,1 +1,4 @@
 *.asv
+*.log
+plot_segev_optics.m
+.*
