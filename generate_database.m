@@ -67,7 +67,7 @@ device_length_num_iter = 8;
 
 % Calculation of jump factors for logarithmic sweeps
 if bulk_doping_num_iter > 1
-   bulk_doping_jump = 10^((log10(bulk_doping_last/bulk_doping_first))/(bulk_doping_num_iter-1));
+   bulk_doping_jump = 10;
 else
    bulk_doping_jump = 1;
 end
@@ -130,7 +130,6 @@ for bulk_doping_loop_index = 1:bulk_doping_num_iter
                     end
 
                     % Prepare simulation parameters
-                    n_junction_loc = L - junction_loc_n;
                     size_of_mesh_element = L / number_of_intervals_in_mesh;
                     delta_list = generate_delta_locations(size_of_mesh_element, number_of_intervals_in_mesh);
                     number_of_deltas = height(delta_list);
@@ -210,14 +209,14 @@ for bulk_doping_loop_index = 1:bulk_doping_num_iter
             mun = mun_first;
         end
         %calculate junction concentration
-        p0 = p0 * 10;
-        n0 = n0 * 10;
+        p0 = p0 * p0_jump;
+        n0 = n0 * n0_jump;
         taup = taup_first;
         taun = taun_first;
     end
     %calculate next bulk concentration
     bulk_doping = bulk_doping * bulk_doping_jump;
-    p0_first = bulk_doping * 10;
-    n0_first = bulk_doping * 10;
+    p0 = bulk_doping * 10;
+    n0 = bulk_doping * 10;
     junction_doping_num_iter = junction_doping_num_iter - 1;
 end
