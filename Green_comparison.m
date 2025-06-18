@@ -56,8 +56,37 @@ plot(Green_points, SCE_Green(:,2), 'o', 'MarkerSize', 6, 'DisplayName', 'SCE_Com
 plot(z, y, '-', 'LineWidth', 1.5, 'DisplayName', 'SCE_Green');                         % Calculated SCE from Green
 
 hold off;
-xlabel('Position (m)');
-ylabel('Spatial Collection Efficiency');  % Changed to SCE
-title('SCE Comparison: Green Data vs. Model');
+xlabel('Depth (z)', 'FontSize', 16);
+ylabel('Spatial Collection Efficiency', 'FontSize', 16);
 legend('Location', 'Best');
 grid on;
+
+% Define if the graph is titled or annotated
+if ~exist('standalone_graph', 'var')
+    standalone_graph = true;
+end
+
+% % Optional annotation string (leave empty '' to skip)
+if ~exist('annotation_text', 'var')
+    annotation_text = '';
+end
+
+if standalone_graph
+    title('SCE Comparison: Green Data vs. Model');
+    % Save figure as .fig and .png
+    savefig('green_comparison.fig');
+    print(gcf, 'green_comparison.png', '-dpng', '-r300');
+else
+    annotation('textbox', [0.01, 0.98, 0.2, 0.05], ...
+        'String', annotation_text, ...
+        'FitBoxToText', 'on', ...
+        'EdgeColor', 'none', ...
+        'FontSize', 30, ...
+        'Color', [0 0 0.7], ...  % Dark blue
+        'HorizontalAlignment', 'left', ...
+        'VerticalAlignment', 'top');
+
+    % Save figure as .fig and .png
+    savefig(['green_comparison_' annotation_text '.fig']);
+    print(gcf, ['green_comparison_' annotation_text '.png'], '-dpng', '-r300');
+end

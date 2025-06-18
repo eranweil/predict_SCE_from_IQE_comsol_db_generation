@@ -149,18 +149,22 @@ for bulk_doping_loop_index = 1:bulk_doping_num_iter
                         % Calculating resulting IQE and SCE from Comsol run
                         get_results_from_model;
                         % For specific devices, compare to Green analytical
+                        standalone_graph = false; % Adds annotation and removes title
                         % model
                         if (L == 100) && (bulk_doping == 1E16) && (p0 == bulk_doping * 100) && (n0 == bulk_doping * 100) && (taup == 10) && (taun == 10) && (mup == 500) && (mun == 1450)
                             Sp = 50;    % Surface recombination velocity (p-side)
                             Sn = 220;   % Surface recombination velocity (n-side)
+                            annotation_text = 'a';
                             Green_comparison;
                         elseif (L == 140) && (bulk_doping == 1E14) && (p0 == bulk_doping * 10000) && (n0 == bulk_doping * 10000) && (taup == 100) && (taun == 100) && (mup == 1077) && (mun == 3124)
                             Sp = 1;     % Surface recombination velocity (p-side)
                             Sn = 5;     % Surface recombination velocity (n-side)
+                            annotation_text = 'b';
                             Green_comparison;
                         elseif (L == 220) && (bulk_doping == 1E15) && (p0 == bulk_doping * 10) && (n0 == bulk_doping * 10) && (taup == 1) && (taun == 1) && (mup == 387) && (mun == 1123)
                             Sp = 100;   % Surface recombination velocity (p-side)
                             Sn = 1000;  % Surface recombination velocity (n-side)
+                            annotation_text = 'c';
                             Green_comparison;
                         end
                         % Prepare data for ML consumption
