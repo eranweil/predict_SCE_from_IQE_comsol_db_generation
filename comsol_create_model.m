@@ -1,9 +1,20 @@
 import com.comsol.model.*
 import com.comsol.model.util.*
 
+comsolRoot = 'C:\Program Files\COMSOL\COMSOL61\Multiphysics';   % <-- adjust
+addpath(fullfile(comsolRoot, 'mli'));
+
+% Try to start COMSOL server, but ignore "Already connected" errors
+try
+    mphstart;
+catch ME
+    if ~contains(ME.message, 'Already connected')
+        rethrow(ME);
+    end
+end
+
 showing_progress = ModelUtil.showProgress(true); % Progress window
 
-% Create the model
 model = ModelUtil.create('Model');
 
 % Results and comsol model base directory
