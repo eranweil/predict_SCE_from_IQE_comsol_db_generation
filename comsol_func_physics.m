@@ -8,6 +8,8 @@ model.component('comp1').physics('semi').feature('gdm2').selection.all;
 model.component('comp1').physics('semi').feature('gdm2').feature('gdmbs1').selection.set([2]);
 model.component('comp1').physics('semi').create('tar1', 'TrapAssistedRecombination', 1);
 model.component('comp1').physics('semi').feature('tar1').selection.all;
+model.component('comp1').physics('semi').create('aur1', 'AURecombination', 1);
+model.component('comp1').physics('semi').feature('aur1').selection.all;
 model.component('comp1').physics('semi').create('udg1', 'UDGeneration', 1);
 model.component('comp1').physics('semi').feature('udg1').selection.all;
 model.component('comp1').physics('semi').create('mc1', 'MetalContact', 0);
